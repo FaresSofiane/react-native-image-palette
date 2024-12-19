@@ -1,6 +1,15 @@
 #import "ImagePalette.h"
 
+
+/*
+ This condition is needed to support use_frameworks.
+ https://github.com/callstack/react-native-builder-bob/discussions/412#discussioncomment-6352402
+ */
+#if __has_include("react_native_image_palette-Swift.h")
 #import "react_native_image_palette-Swift.h"
+#else
+#import <react_native_image_palette/react_native_image_palette-Swift.h>
+#endif
 
 @implementation ImagePalette
 RCT_EXPORT_MODULE()
@@ -22,7 +31,7 @@ RCT_EXPORT_METHOD(getAverageColor:(NSString*)uri
                   reject:(RCTPromiseRejectBlock)reject)
 {
     ImagePaletteModule *imagePalette = (ImagePaletteModule *)self.manager;
-    
+
     NSDictionary* headers = [config objectForKey:@"headers"];
 
     [imagePalette getAverageColorWithUri:uri headers:headers onResolve:resolve onReject:reject];
@@ -34,10 +43,10 @@ RCT_EXPORT_METHOD(getPalette:(NSString*)uri
                   reject:(RCTPromiseRejectBlock)reject)
 {
     ImagePaletteModule *imagePalette = (ImagePaletteModule *)self.manager;
-    
+
     NSDictionary* headers = [config objectForKey:@"headers"];
     NSString* fallback = [config objectForKey:@"fallbackColor"];
-    
+
     if (fallback == nil) {
         fallback = @"#fff";
     }
@@ -53,9 +62,9 @@ RCT_EXPORT_METHOD(getSegmentsAverageColor:(NSString*)uri
 {
     ImagePaletteModule *imagePalette = (ImagePaletteModule *)self.manager;
 
-    
+
     NSDictionary* headers = [config objectForKey:@"headers"];
-    
+
     [imagePalette getSegmentsAverageColorWithUri:uri segments:segments headers:headers onResolve:resolve onReject:reject];
 }
 RCT_EXPORT_METHOD(getSegmentsPalette:(NSString*)uri
@@ -65,15 +74,15 @@ RCT_EXPORT_METHOD(getSegmentsPalette:(NSString*)uri
                   reject:(RCTPromiseRejectBlock)reject)
 {
     ImagePaletteModule *imagePalette = (ImagePaletteModule *)self.manager;
-    
+
     NSDictionary* headers = [config objectForKey:@"headers"];
-    
+
     NSString* fallback = [config objectForKey:@"fallbackColor"];
-    
+
     if (fallback == nil) {
         fallback = @"#fff";
     }
-    
+
     [imagePalette getSegmentsPaletteWithUri:uri segments:segments fallback:fallback headers:headers onResolve:resolve onReject:reject];
 }
 
