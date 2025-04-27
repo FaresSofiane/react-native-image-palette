@@ -21,9 +21,9 @@ class ImagePaletteModule internal constructor(context: ReactApplicationContext) 
     const val NAME = "ImagePalette"
   }
 
-  private fun getHeadersFromConfig(config: ReadableMap): MutableMap<String, String> {
+  private fun getHeadersFromConfig(config: ReadableMap?): MutableMap<String, String> {
     val headers = mutableMapOf<String, String>()
-    val configHeaders = config.getMap("headers")
+    val configHeaders = config?.getMap("headers")
 
     configHeaders?.let {
       val iterator = it.keySetIterator()
@@ -39,11 +39,16 @@ class ImagePaletteModule internal constructor(context: ReactApplicationContext) 
     return headers
   }
 
-  private fun getPixelSpacingFromConfig(config: ReadableMap): Int {
+  private fun getPixelSpacingFromConfig(config: ReadableMap?): Int {
+    val defaultSpacing = 5
+    if(config == null) {
+      return defaultSpacing
+    }
+
     return try {
       config.getInt("pixelSpacingAndroid")
     } catch (exception: Exception) {
-      5
+      defaultSpacing
     }
   }
 
@@ -67,12 +72,12 @@ class ImagePaletteModule internal constructor(context: ReactApplicationContext) 
   }
 
 
-  private fun getFallbackColorFromConfig(config: ReadableMap): String {
-    return config.getString("fallbackColor") ?: "#fff"
+  private fun getFallbackColorFromConfig(config: ReadableMap?): String {
+    return config?.getString("fallbackColor") ?: "#fff"
   }
 
   @ReactMethod
-  override fun getPalette(uri: String, config: ReadableMap, promise: Promise) {
+  override fun getPalette(uri: String, config: ReadableMap?, promise: Promise) {
 
     val headers = this.getHeadersFromConfig(config)
 
@@ -82,7 +87,7 @@ class ImagePaletteModule internal constructor(context: ReactApplicationContext) 
   }
 
   @ReactMethod
-  override fun getAverageColor(uri: String, config: ReadableMap, promise: Promise) {
+  override fun getAverageColor(uri: String, config: ReadableMap?, promise: Promise) {
 
     val headers = getHeadersFromConfig(config)
 
@@ -96,7 +101,7 @@ class ImagePaletteModule internal constructor(context: ReactApplicationContext) 
   override fun getSegmentsAverageColor(
     uri: String,
     segments: ReadableArray,
-    config: ReadableMap,
+    config: ReadableMap?,
     promise: Promise
   ) {
     val headers = this.getHeadersFromConfig(config)
@@ -119,7 +124,7 @@ class ImagePaletteModule internal constructor(context: ReactApplicationContext) 
   override fun getSegmentsPalette(
     uri: String,
     segments: ReadableArray,
-    config: ReadableMap,
+    config: ReadableMap?,
     promise: Promise
   ) {
     val headers = this.getHeadersFromConfig(config)
